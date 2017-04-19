@@ -64,7 +64,7 @@ king(Pids) ->
   monitor:write([{state, king}]),
   receive
     {ping, Pid} ->
-      timer:sleep(rand:uniform(?T div 7)),
+      timer:sleep(rand:uniform(?T div 11)),
       Pid ! pong,
       king(Pids)
   end.
@@ -99,7 +99,7 @@ send_to_highers(Pids, Msg) ->
   send_all(HighPids, Msg).
 
 send_all(Pids, Msg) ->
-  io:format("~w: send [~p] to [~p]~n", [self(), Msg, Pids]),
+%%  io:format("~w: send [~p] to [~p]~n", [self(), Msg, Pids]),
   send_msg(Pids, Msg).
 
 send_msg([], _) -> ok;

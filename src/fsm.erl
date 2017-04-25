@@ -71,6 +71,18 @@ king(Pids) ->
 
 passive(Pids, KingPid) ->
   monitor:write([{state, passive}, {king_pid, KingPid}]),
+  receive
+    {i_am_the_king, NewKingPid} ->
+      king_recognition(Pids, NewKingPid);
+    {you_are_alive, Pid} ->
+      Pid ! fine_thanks,
+      start_election(Pids)
+  after ?T ->
+    check_king(Pids, KingPid)
+  end.
+
+check_king(Pids, KingPid) ->
+  monitor:write([{state, check_king}, {king_pid, KingPid}]),
   KingPid ! {ping, self()},
   receive
     pong ->
@@ -88,7 +100,7 @@ passive(Pids, KingPid) ->
 king_recognition(Pids, KingPid) ->
   log("recognition king"),
   flush(),
-  passive(Pids, KingPid).
+  check_king(Pids, KingPid).
 
 
 is_highest(Pids) ->

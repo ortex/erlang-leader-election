@@ -6,7 +6,8 @@ start(N) ->
   monitor:start(),
   Pids = create_nodes(N),
   lists:foreach(fun(Pid) -> Pid ! {pids, Pids} end, Pids),
-  monitor:state().
+  monitor:state(),
+  ok.
 
 create_nodes(0) -> [];
 create_nodes(N) ->
@@ -21,7 +22,8 @@ stop() ->
   Pids = [P || {P, _} <- Data],
   io:format("~w~n", [Pids]),
   lists:foreach(fun(Pid) -> exit(Pid, kill) end, Pids),
-  monitor:stop().
+  monitor:stop(),
+  ok.
 
 kill_king() ->
   Data = monitor:state(),
